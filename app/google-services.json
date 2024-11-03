@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "62782517712",
+    "project_id": "trademenukeys",
+    "storage_bucket": "trademenukeys.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62782517712:android:2ca8d78655b7abc46249d5",
+        "android_client_info": {
+          "package_name": "com.example.project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACR4HJ3LnSM2t7NBGmkuvmdKqggYIpOH8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

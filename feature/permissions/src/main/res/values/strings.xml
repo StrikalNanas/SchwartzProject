@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="dialog_permission_overlay_title">Overlay Permission</string>
+    <string name="dialog_permission_notification_title">Notification Permission</string>
+    <string name="dialog_title_permission_accessibility">Accessibility service</string>
+    <string name="dialog_permission_mandatory_denied_title">Permission denied</string>
+
+    <string name="message_permission_desc_overlay">The overlay permission is required in order to show
+        interface over the applications you want to automate, allowing you to configure your scenario without stopping
+        the other application.</string>
+    <string name="message_permission_desc_accessibility">The accessibility service permission allows you to perform gestures on the device screen.</string>
+    <string name="message_permission_desc_notification">Optional: Shows the notification while the application is running in order
+        to easily return to the scenario selection screen.</string>
+
+    <string name="button_request_permission">Request permission</string>
+    <string name="button_deny">Deny</string>
+
+</resources>
