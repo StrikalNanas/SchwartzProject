@@ -21,8 +21,6 @@ class FireStore @Inject constructor(
             return
         }
 
-        userKey.userKeyMapToData()
-
         Firebase.firestore
             .collection("keys")
             .get()
