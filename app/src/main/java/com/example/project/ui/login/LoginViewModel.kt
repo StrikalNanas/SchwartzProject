@@ -1,11 +1,10 @@
-package com.example.project.activity.login
+package com.example.project.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.UserKey
 import com.example.domain.repository.FireStoreRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -23,8 +22,12 @@ class LoginViewModel @Inject constructor(
         val userKey = UserKey(userKey = userKeyString)
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
-            fireStoreRepository.checkUserKey(userKey) { isValid ->
-                _loginState.value = if (isValid) LoginState.Success else LoginState.KeyNotFound
+
+            val result = fireStoreRepository.checkUserKey(userKey)
+            if (result.isSuccess) {
+                _loginState.value = if (result.getOrDefault(false)) LoginState.Success else LoginState.KeyNotFound
+            } else {
+                _loginState.value = LoginState.KeyNotFound
             }
         }
     }

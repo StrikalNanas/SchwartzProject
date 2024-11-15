@@ -6,7 +6,7 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import androidx.core.app.ServiceCompat
 
-fun Service.startForegroundMediaProjection(notificationId: Int, notification: Notification) {
+fun Service.startForegroundNotification(notificationId: Int, notification: Notification) {
     when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
             ServiceCompat.startForeground(

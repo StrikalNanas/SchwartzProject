@@ -1,26 +1,25 @@
-package com.example.project.activity.menu
+package com.example.project.ui.menu
 
+import android.app.Application
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
-import com.example.base.extensions.showShortToast
 import com.example.permissions.PermissionController
 import com.example.permissions.model.PermissionAccessibilityService
 import com.example.permissions.model.PermissionNotification
 import com.example.permissions.model.PermissionOverlay
-import com.example.project.ILocalService
-import com.example.project.ProgramService
-import com.example.project.R
+import com.example.project.service.capture.ScreenCaptureService
+import com.example.project.service.touch.TouchService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 
 @HiltViewModel
 class MenuViewModel @Inject constructor(
-    private val permissionController: PermissionController,
-    private var localService: ILocalService
+    private val applicationContext: Application,
+    private val permissionController: PermissionController
 ) : ViewModel() {
 
     fun onStartPermissions(activity: AppCompatActivity, onAllGranted: () -> Unit) {
@@ -29,9 +28,9 @@ class MenuViewModel @Inject constructor(
             permissions = listOf(
                 PermissionOverlay,
                 PermissionAccessibilityService(
-                    componentName = ComponentName(activity, ProgramService::class.java),
+                    componentName = ComponentName(activity, TouchService::class.java),
                     isServiceGranted = { context ->
-                        ProgramService.isAccessibilityServiceEnabled(context)
+                        TouchService.isAccessibilityServiceEnabled(context)
                     }
                 ),
                 PermissionNotification
@@ -40,8 +39,11 @@ class MenuViewModel @Inject constructor(
         )
     }
 
-    fun startSchwartzService(context: Context, resultCode: Int, data: Intent) {
-        localService.startProjection(resultCode, data)
-        context.showShortToast(R.string.app_name)
+    fun startScreenCaptureService(resultCode: Int, data: Intent) {
+        ContextCompat.startForegroundService(
+            applicationContext,
+            ScreenCaptureService.getIntent(applicationContext)
+        )
     }
 }
+

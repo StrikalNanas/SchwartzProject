@@ -1,4 +1,4 @@
-package com.example.project.activity.login
+package com.example.project.ui.login
 
 import android.os.Bundle
 import android.util.Log

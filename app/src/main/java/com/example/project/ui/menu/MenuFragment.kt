@@ -1,4 +1,4 @@
-package com.example.project.activity.menu
+package com.example.project.ui.menu
 
 import android.content.ActivityNotFoundException
 import android.content.DialogInterface
@@ -15,16 +15,11 @@ import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.example.base.extensions.showShortToast
 import com.example.project.R
 import com.example.project.databinding.FragmentMenuBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MenuFragment : Fragment() {
@@ -52,8 +47,7 @@ class MenuFragment : Fragment() {
             if (result.resultCode != RESULT_OK) {
                 requireContext().showShortToast(R.string.toast_denied_screen_sharing_permission)
             } else {
-                viewModel.startSchwartzService(
-                    requireContext(),
+                viewModel.startScreenCaptureService(
                     resultCode = result.resultCode,
                     data = result.data!!
                 )

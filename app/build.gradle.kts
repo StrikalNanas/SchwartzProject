@@ -46,6 +46,7 @@ dependencies {
 
     implementation(project(":core:common:ui"))
     implementation(project(":core:domain"))
+    implementation(project(":core:data"))
     implementation(project(":core:common:base"))
     implementation(project(":feature:permissions"))
 

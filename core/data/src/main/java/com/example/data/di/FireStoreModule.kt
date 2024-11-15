@@ -1,7 +1,7 @@
 package com.example.data.di
 
 import android.content.Context
-import com.example.data.repositoty.FireStore
+import com.example.data.repository.FireStore
 import com.example.domain.repository.FireStoreRepository
 import dagger.Module
 import dagger.Provides
