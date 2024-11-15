@@ -3,7 +3,7 @@ activityKtx = "1.9.3"
 agp = "8.5.2"
 fragmentKtx = "1.8.4"
 hiltAndroid = "2.51.1"
-kotlin = "1.9.0"
+kotlin = "1.9.23"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -17,6 +17,8 @@ activity = "1.9.3"
 constraintlayout = "2.1.4"
 googleGmsGoogleServices = "4.4.2"
 firebaseFirestore = "25.1.1"
+googleDaggerHilt = "2.51.1"
+ksp = "1.9.23-1.0.19"
 
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
@@ -38,6 +40,9 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
 [plugins]
+googleDaggerHiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "googleDaggerHilt" }
+googleKsp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }

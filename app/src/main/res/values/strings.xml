@@ -5,8 +5,9 @@
 
     <string name="notification_content_text">Media Projection Active</string>
 
-    <string name="toast_not_found_key">Invalid key!</string>
     <string name="toast_login_success">Valid key!</string>
+    <string name="toast_login_no_internet">No Internet Connection!</string>
+    <string name="toast_login_not_found_key">Invalid key!</string>
 
     <string name="welcome_message">Welcome!</string>
     <string name="key_hint">EXAM-PLEK-EY1</string>

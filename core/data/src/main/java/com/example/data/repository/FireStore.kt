@@ -12,26 +12,26 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class FireStore @Inject constructor(
-    @ApplicationContext private val context: Context
+    private val context: Context
 ) : FireStoreRepository {
 
     override suspend fun checkUserKey(userKey: UserKey): Result<Boolean> {
         return if (!context.isNetworkAvailable()) {
-            Result.failure(IllegalStateException())
+            Result.failure(NoInternetException())
         } else {
-            try {
-                val querySnapshot = Firebase.firestore.collection("keys").get().await()
-                val keyFound = querySnapshot.documents.any { document ->
-                    document.getString("key") == userKey.userKey
-                }
+            val querySnapshot = Firebase.firestore.collection("keys").get().await()
+            val keyFound = querySnapshot.documents.any { document ->
+                document.getString("key") == userKey.userKey
+            }
 
-                Result.success(keyFound)
-            } catch (error: Exception) {
-                Log.e(TAG, "Error fetching keys", error)
-                Result.failure(error)
+            if (keyFound) {
+                Result.success(true)
+            } else {
+                Result.failure(KeyNotFoundException())
             }
         }
     }
 }
 
-internal const val TAG = "FireStoreRepository"
+class KeyNotFoundException : Exception()
+class NoInternetException : Exception()

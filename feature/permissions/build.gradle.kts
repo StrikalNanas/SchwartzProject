@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.googleDaggerHiltAndroid)
+    alias(libs.plugins.googleKsp)
 }
 
 android {
@@ -50,7 +50,7 @@ dependencies {
 
     // dagger hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
 
     // Lifecycle components
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

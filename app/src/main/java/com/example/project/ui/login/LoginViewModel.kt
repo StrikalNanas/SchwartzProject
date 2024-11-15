@@ -2,6 +2,8 @@ package com.example.project.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.data.repository.KeyNotFoundException
+import com.example.data.repository.NoInternetException
 import com.example.domain.model.UserKey
 import com.example.domain.repository.FireStoreRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,9 +27,13 @@ class LoginViewModel @Inject constructor(
 
             val result = fireStoreRepository.checkUserKey(userKey)
             if (result.isSuccess) {
-                _loginState.value = if (result.getOrDefault(false)) LoginState.Success else LoginState.KeyNotFound
+                _loginState.value = LoginState.Success
             } else {
-                _loginState.value = LoginState.KeyNotFound
+                val error = result.exceptionOrNull()
+                when(error) {
+                    is NoInternetException -> _loginState.value = LoginState.NoInternet
+                    is KeyNotFoundException -> _loginState.value = LoginState.KeyNotFound
+                }
             }
         }
     }
@@ -42,4 +48,5 @@ sealed class LoginState {
     data object Loading: LoginState()
     data object Success: LoginState()
     data object KeyNotFound : LoginState()
+    data object NoInternet: LoginState()
 }

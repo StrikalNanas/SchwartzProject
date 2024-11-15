@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.provider.Settings
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 
 @SuppressLint("InlinedApi")
 data object PermissionOverlay : Permission.SpecialPermission() {
@@ -17,6 +19,7 @@ data object PermissionOverlay : Permission.SpecialPermission() {
             Uri.parse("package:${context.packageName}")
         )
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY)
+
         return try {
             context.startActivity(intent)
             true

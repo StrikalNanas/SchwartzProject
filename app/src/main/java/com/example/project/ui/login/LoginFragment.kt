@@ -11,7 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.example.base.extensions.showShortToast
+import com.example.base.extensions.showToast
 import com.example.project.R
 import com.example.project.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,10 +48,11 @@ class LoginFragment : Fragment() {
                     viewModel.loginState.collect { state ->
                         Log.d("MyLog", "Login state: $state")
                         when(state) {
+                            is LoginState.Idle -> handleIdle()
+                            is LoginState.Loading -> handleLoading()
                             is LoginState.Success -> handleSuccess()
                             is LoginState.KeyNotFound -> handleKeyNotFound()
-                            is LoginState.Loading -> handleLoading()
-                            is LoginState.Idle -> handleIdle()
+                            is LoginState.NoInternet -> handleNoInternet()
                         }
                     }
                 }
@@ -59,21 +60,26 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun handleSuccess() {
-        requireContext().showShortToast(R.string.toast_login_success)
-        findNavController().navigate(R.id.fragment_login_to_menu)
-    }
-
-    private fun handleKeyNotFound() {
-        requireContext().showShortToast(R.string.toast_not_found_key)
-        viewModel.resetToIdle()
+    private fun handleIdle() {
+        viewBinding.authButton.isEnabled = true
     }
 
     private fun handleLoading() {
         viewBinding.authButton.isEnabled = false
     }
 
-    private fun handleIdle() {
-        viewBinding.authButton.isEnabled = true
+    private fun handleSuccess() {
+        requireContext().showToast(R.string.toast_login_success)
+        findNavController().navigate(R.id.fragment_login_to_menu)
+    }
+
+    private fun handleKeyNotFound() {
+        requireContext().showToast(R.string.toast_login_not_found_key)
+        viewModel.resetToIdle()
+    }
+
+    private fun handleNoInternet() {
+        requireContext().showToast(R.string.toast_login_no_internet)
+        viewModel.resetToIdle()
     }
 }

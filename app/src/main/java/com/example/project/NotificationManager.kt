@@ -21,19 +21,13 @@ class NotificationManager(context: Context){
         NotificationManagerCompat.from(context)
 
     fun createNotification(
-        context: Context,
-        notificationTitle: String,
-        notificationText: String,
-        notificationIntent: PendingIntent
+        context: Context
     ): Notification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationManager.createNotificationChannel(createNotificationChannel(context))
         }
 
         return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
-            .setContentTitle(notificationTitle)
-            .setContentText(notificationText)
-            .setContentIntent(notificationIntent)
             .setCategory(Notification.CATEGORY_SERVICE)
             .setLocalOnly(true)
             .setOngoing(true)

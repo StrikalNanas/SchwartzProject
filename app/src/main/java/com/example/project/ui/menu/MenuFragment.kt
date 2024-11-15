@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.base.extensions.showShortToast
+import com.example.base.extensions.showToast
 import com.example.project.R
 import com.example.project.databinding.FragmentMenuBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -45,7 +45,7 @@ class MenuFragment : Fragment() {
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode != RESULT_OK) {
-                requireContext().showShortToast(R.string.toast_denied_screen_sharing_permission)
+                requireContext().showToast(R.string.toast_denied_screen_sharing_permission)
             } else {
                 viewModel.startScreenCaptureService(
                     resultCode = result.resultCode,
