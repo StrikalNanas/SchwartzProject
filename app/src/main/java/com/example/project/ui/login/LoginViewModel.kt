@@ -26,14 +26,11 @@ class LoginViewModel @Inject constructor(
             _loginState.value = LoginState.Loading
 
             val result = fireStoreRepository.checkUserKey(userKey)
-            if (result.isSuccess) {
-                _loginState.value = LoginState.Success
-            } else {
-                val error = result.exceptionOrNull()
-                when(error) {
-                    is NoInternetException -> _loginState.value = LoginState.NoInternet
-                    is KeyNotFoundException -> _loginState.value = LoginState.KeyNotFound
-                }
+            _loginState.value = when {
+                result.isSuccess -> LoginState.Success
+                result.exceptionOrNull() is NoInternetException -> LoginState.NoInternet
+                result.exceptionOrNull() is KeyNotFoundException -> LoginState.KeyNotFound
+                else -> LoginState.Idle
             }
         }
     }

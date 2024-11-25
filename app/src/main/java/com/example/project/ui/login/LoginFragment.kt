@@ -46,40 +46,29 @@ class LoginFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     viewModel.loginState.collect { state ->
-                        Log.d("MyLog", "Login state: $state")
                         when(state) {
-                            is LoginState.Idle -> handleIdle()
-                            is LoginState.Loading -> handleLoading()
-                            is LoginState.Success -> handleSuccess()
-                            is LoginState.KeyNotFound -> handleKeyNotFound()
-                            is LoginState.NoInternet -> handleNoInternet()
+                            is LoginState.Idle -> {
+                                viewBinding.authButton.isEnabled = true
+                            }
+                            is LoginState.Loading -> {
+                                viewBinding.authButton.isEnabled = false
+                            }
+                            is LoginState.Success -> {
+                                requireContext().showToast(R.string.toast_login_success)
+                                findNavController().navigate(R.id.fragment_login_to_menu)
+                            }
+                            is LoginState.KeyNotFound -> {
+                                requireContext().showToast(R.string.toast_login_not_found_key)
+                                viewModel.resetToIdle()
+                            }
+                            is LoginState.NoInternet -> {
+                                requireContext().showToast(R.string.toast_login_no_internet)
+                                viewModel.resetToIdle()
+                            }
                         }
                     }
                 }
             }
         }
-    }
-
-    private fun handleIdle() {
-        viewBinding.authButton.isEnabled = true
-    }
-
-    private fun handleLoading() {
-        viewBinding.authButton.isEnabled = false
-    }
-
-    private fun handleSuccess() {
-        requireContext().showToast(R.string.toast_login_success)
-        findNavController().navigate(R.id.fragment_login_to_menu)
-    }
-
-    private fun handleKeyNotFound() {
-        requireContext().showToast(R.string.toast_login_not_found_key)
-        viewModel.resetToIdle()
-    }
-
-    private fun handleNoInternet() {
-        requireContext().showToast(R.string.toast_login_no_internet)
-        viewModel.resetToIdle()
     }
 }

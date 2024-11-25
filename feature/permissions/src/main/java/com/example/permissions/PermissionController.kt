@@ -1,8 +1,8 @@
 package com.example.permissions
 
 import androidx.appcompat.app.AppCompatActivity
-import com.example.permissions.model.Permission
-import com.example.permissions.ui.PermissionDialogFragment
+import com.example.permissions.domain.model.Permission
+import com.example.permissions.presentation.PermissionDialogFragment
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,8 +10,6 @@ import javax.inject.Inject
 
 @ActivityRetainedScoped
 class PermissionController @Inject constructor() {
-
-    private val requestNeededPermission: MutableSet<Permission> = mutableSetOf()
 
     private val _currentRequestPermission: MutableStateFlow<Permission?> = MutableStateFlow(null)
     val currentRequestPermission: StateFlow<Permission?> = _currentRequestPermission
@@ -24,34 +22,30 @@ class PermissionController @Inject constructor() {
         onAllGranted: () -> Unit
     ) {
         onAllGrantedCallback = onAllGranted
-        requestNeededPermission.clear()
+        val requestNeededPermission = permissions.filter { !it.checkIsGrantedPermission(activity) }
 
-        if (permissions.isEmpty()) {
-            notifyOnAllGranted()
-            return
-        }
-
-        permissions.forEach { permission ->
-            if (!permission.checkIsGrantedPermission(activity)) requestNeededPermission.add(permission)
-        }
-
-        handleNextPermission(activity)
-    }
-
-    private fun handleNextPermission(activity: AppCompatActivity) {
         if (requestNeededPermission.isEmpty()) {
-            notifyOnAllGranted()
-            return
-        }
-
-        val nextPermission = requestNeededPermission.pupFirst()
-        activity.showPermissionDialogFragment(nextPermission) { isGranted ->
-            if (isGranted) handleNextPermission(activity)
+            onAllGranted()
+        } else {
+            requestNextPermission(activity, requestNeededPermission)
         }
     }
 
-    private fun MutableSet<Permission>.pupFirst() =
-        first().also(::remove)
+    private fun requestNextPermission(activity: AppCompatActivity, permissions: List<Permission>) {
+        val nextPermission = permissions.first()
+        activity.showPermissionDialogFragment(nextPermission) { isGranted ->
+            if (isGranted) {
+                val remainingPermissions = permissions.drop(1)
+                if (remainingPermissions.isNotEmpty()) {
+                    requestNextPermission(activity, remainingPermissions)
+                } else {
+                    onAllGrantedCallback?.invoke()
+                    onAllGrantedCallback = null
+                    _currentRequestPermission.value = null
+                }
+            }
+        }
+    }
 
     private fun AppCompatActivity.showPermissionDialogFragment(permission: Permission, resultListener: (isGranted: Boolean) -> Unit) {
         supportFragmentManager.setFragmentResultListener(FRAGMENT_RESULT_KEY_PERMISSION_STATE, this) { _, bundle ->
@@ -62,19 +56,8 @@ class PermissionController @Inject constructor() {
         _currentRequestPermission.value = permission
         PermissionDialogFragment().show(supportFragmentManager, FRAGMENT_TAG_PERMISSION_DIALOG)
     }
-
-    private fun clear() {
-        onAllGrantedCallback = null
-        _currentRequestPermission.value = null
-        requestNeededPermission.clear()
-    }
-
-    private fun notifyOnAllGranted() {
-        onAllGrantedCallback?.invoke()
-        clear()
-    }
 }
 
-internal const val FRAGMENT_TAG_PERMISSION_DIALOG = "PermissionDialog"
-internal const val FRAGMENT_RESULT_KEY_PERMISSION_STATE = ":$FRAGMENT_TAG_PERMISSION_DIALOG:state"
-internal const val EXTRA_RESULT_KEY_PERMISSION_STATE = "$FRAGMENT_RESULT_KEY_PERMISSION_STATE:isGranted"
+const val FRAGMENT_TAG_PERMISSION_DIALOG = "PermissionDialog"
+const val FRAGMENT_RESULT_KEY_PERMISSION_STATE = ":$FRAGMENT_TAG_PERMISSION_DIALOG:state"
+const val EXTRA_RESULT_KEY_PERMISSION_STATE = "$FRAGMENT_RESULT_KEY_PERMISSION_STATE:isGranted"

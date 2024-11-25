@@ -1,4 +1,4 @@
-package com.example.permissions.model
+package com.example.permissions.domain.model
 
 import android.content.Context
 import android.util.Log
@@ -38,13 +38,8 @@ sealed class Permission {
                     activityResultLauncher.launch(permissionString)
                     true
                 } catch (error: IllegalStateException) {
-                    Log.e(TAG, error.toString())
                     false
                 }
             } ?: false
-    }
-
-    protected companion object {
-        const val TAG = "MyLog"
     }
 }

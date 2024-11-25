@@ -1,4 +1,4 @@
-package com.example.permissions.ui
+package com.example.permissions.presentation
 
 import android.content.Context
 import androidx.annotation.StringRes
@@ -7,10 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.permissions.PermissionController
 import com.example.permissions.R
-import com.example.permissions.model.Permission
-import com.example.permissions.model.PermissionAccessibilityService
-import com.example.permissions.model.PermissionNotification
-import com.example.permissions.model.PermissionOverlay
+import com.example.permissions.domain.model.Permission
+import com.example.permissions.domain.model.PermissionAccessibilityService
+import com.example.permissions.domain.model.PermissionNotification
+import com.example.permissions.domain.model.PermissionOverlay
+import com.example.permissions.domain.usecase.PermissionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class DialogPermissionViewModel @Inject constructor(
-    private val permissionController: PermissionController
+    private val permissionController: PermissionController,
+    private val permissionUseCase: PermissionUseCase
 ) : ViewModel() {
 
     val permissionDialogUiState: StateFlow<PermissionDialogUiState?> = permissionController.currentRequestPermission
@@ -29,8 +31,9 @@ internal class DialogPermissionViewModel @Inject constructor(
 
     fun isPermissionGranted(context: Context): Boolean {
         val permission = permissionController.currentRequestPermission.value ?: return false
-        return permission.checkIsGrantedPermission(context)
+        return permissionUseCase.isPermissionGranted(permission, context)
     }
+
     fun initResultLauncherIfNeeded(fragment: Fragment, onResult: (isGranted: Boolean) -> Unit) {
         val permission = permissionController.currentRequestPermission.value ?: return
         if (permission is Permission.DangerousPermission)  {
@@ -40,14 +43,14 @@ internal class DialogPermissionViewModel @Inject constructor(
         }
     }
 
-    fun startRequestIfNeeded(context: Context) {
+    fun requestPermission(context: Context) {
         val permission = permissionController.currentRequestPermission.value ?: return
-        permission.onStartPermissionIfNeeded(context)
+        permissionUseCase.requestPermission(permission, context)
     }
 
     fun shouldBeDismissedOnResume(context: Context): Boolean {
         val permission = permissionController.currentRequestPermission.value ?: return true
-        return permission is Permission.SpecialPermission && (permission.checkIsGrantedPermission(context))
+        return permission is Permission.SpecialPermission && (permissionUseCase.isPermissionGranted(permission, context))
     }
 }
 

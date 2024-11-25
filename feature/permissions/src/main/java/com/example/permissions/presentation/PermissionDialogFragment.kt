@@ -1,4 +1,4 @@
-package com.example.permissions.ui
+package com.example.permissions.presentation
 
 import android.app.Dialog
 import android.content.DialogInterface
@@ -40,7 +40,7 @@ internal class PermissionDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         viewBinding = DialogPermissionBinding.inflate(layoutInflater).apply {
             buttonRequestPermission.setOnClickListener {
-                viewModel.startRequestIfNeeded(requireContext())
+                viewModel.requestPermission(requireContext())
             }
             buttonDenyPermission.setOnClickListener {
                 dismiss()
