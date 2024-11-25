@@ -11,7 +11,7 @@ import com.example.permissions.domain.model.Permission
 import com.example.permissions.domain.model.PermissionAccessibilityService
 import com.example.permissions.domain.model.PermissionNotification
 import com.example.permissions.domain.model.PermissionOverlay
-import com.example.permissions.domain.usecase.PermissionUseCase
+import com.example.permissions.domain.repository.PermissionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 internal class DialogPermissionViewModel @Inject constructor(
     private val permissionController: PermissionController,
-    private val permissionUseCase: PermissionUseCase
+    private val permissionRepository: PermissionRepository
 ) : ViewModel() {
 
     val permissionDialogUiState: StateFlow<PermissionDialogUiState?> = permissionController.currentRequestPermission
@@ -31,7 +31,7 @@ internal class DialogPermissionViewModel @Inject constructor(
 
     fun isPermissionGranted(context: Context): Boolean {
         val permission = permissionController.currentRequestPermission.value ?: return false
-        return permissionUseCase.isPermissionGranted(permission, context)
+        return permissionRepository.isPermissionGranted(permission, context)
     }
 
     fun initResultLauncherIfNeeded(fragment: Fragment, onResult: (isGranted: Boolean) -> Unit) {
@@ -45,12 +45,12 @@ internal class DialogPermissionViewModel @Inject constructor(
 
     fun requestPermission(context: Context) {
         val permission = permissionController.currentRequestPermission.value ?: return
-        permissionUseCase.requestPermission(permission, context)
+        permissionRepository.requestPermission(permission, context)
     }
 
     fun shouldBeDismissedOnResume(context: Context): Boolean {
         val permission = permissionController.currentRequestPermission.value ?: return true
-        return permission is Permission.SpecialPermission && (permissionUseCase.isPermissionGranted(permission, context))
+        return permission is Permission.SpecialPermission && (permissionRepository.isPermissionGranted(permission, context))
     }
 }
 
